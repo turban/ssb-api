@@ -1,0 +1,11 @@
+{
+  "name": "ssb-api",
+  "version": "0.0.1",
+  "authors": [
+    "Bjorn Sandvik <bjorn@thematicmapping.org>"
+  ],
+  "private": false,
+  "dependencies": {
+    "reqwest": "~1.1.5"
+  }
+}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>SSB API</title>
+	<!--<link href="css/styles.css" rel="stylesheet">-->
+</head>
+<body>
+
+	<script src="../bower_components/reqwest/src/reqwest.js"></script>
+
+	<script>
+
+	reqwest({
+		url: 'http://data.ssb.no/api/v0/dataset/list.json?lang=no', 
+		crossOrigin: true,
+		success: function (response) {
+			console.log("kommuner", filter(response.datasets, 'kommuner'));
+			console.log("fylker", filter(response.datasets, 'fylker'));
+		}
+	});
+
+	function filter (datasets, tag) {
+		return datasets.filter(function(dataset) {
+			return dataset.tags.indexOf(tag) !== -1;
+		});
+	}
+
+
+	</script>
+
+</body>
+</html>
