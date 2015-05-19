@@ -5,65 +5,10 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>SSB API</title>
-	<!--<link href="css/styles.css" rel="stylesheet">-->
+	<link href="css/colorbrewer.css" rel="stylesheet">
 	<style>
-
-.map text {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 10px;
-  pointer-events: none;
-}
-
-.map path {
-  stroke-linejoin: round;
-  stroke-linecap: round;    
-}
-
-.map .overlay {
-  fill: none;
-  pointer-events: all;
-}
-
-.map .outline {
-  fill: none;  
-  stroke: #777;
-  stroke-width: 2px;  
-}
-
-.map .graticule {
-  fill: none;
-  stroke: #777;
-  stroke-width: .2px;
-  stroke-opacity: .5;
-}
-
-/*
-.map .land-glow {
-  fill: #333;
-  fill-opacity: .2;
-  filter: url(#blur);
-}
-
-.map .land-fill {
-  fill: #fff;
-  stroke: #ddd;
-  stroke-width: .5px;
-}
-*/
-
-.map .land {
-  fill: #eee;
-  stroke: #ccc;
-  stroke-width: .5px;
-}
-
-
-
-
-
-
-
-
+		.kommune { fill: none; stroke: #000; stroke-width: .2px; }
+		.fylke { fill: none; stroke: #000; stroke-width: 2px; stroke-linejoin: round; }
 	</style>
 
 </head>
@@ -75,18 +20,15 @@
 
 	<script>
 
-		d3.json("data/NO_Admin_latlng.topojson", function(error, data) {
-			var kommuner = topojson.feature(data, data.objects.NO_Kommuner_pol_latlng);
-			var fylker = topojson.feature(data, data.objects.NO_Fylker_pol_latlng);
+		d3.json("data/NO_Admin_latlng.topojson", function(error, norge) {
 
 			var width = 960,
 			    height = 500;
 
-			// https://github.com/mbostock/d3/wiki/Geo-Projections
 			var projection = d3.geo.azimuthalEqualArea()
-			    .scale(width * 5)
+			    .scale(width * 10)
 			    .rotate([-10, -70])
-			    .center([-3, -9])
+			    .center([-1, -9])
 			    .translate([width / 2, height / 2])
 			    .precision(.1);
 
@@ -98,15 +40,39 @@
 			    .attr("height", height)
 			    .classed("map", true);        
 
-			var g = svg.append("g")
-			    .classed("layers", true);
+			JSONstat('http://data.ssb.no/api/v0/dataset/1108.json?lang=no', function(){
+				var ds = this.Dataset(0);
 
-			  // http://bl.ocks.org/mbostock/4136647
-			  g.append("path")
-			      .datum(kommuner)
-			      .classed("land", true)
-			      .attr("id", "land")
-			      .attr("d", path);
+				var tbl = ds.toTable({ type: 'arrobj', content: 'id' }, function (d){
+					if (d.ContentsCode === 'Folketilvekst10') {
+						return d;
+					}
+				});
+
+				var min = d3.min(tbl, function(d) { return d.value }),
+					max = d3.max(tbl, function(d) { return d.value }),
+					byId = d3.map(tbl, function(d) { return d.Region; });
+
+				var quantize = d3.scale.quantile()
+					.domain(tbl.map(function(d){return d.value}).sort())
+					.range(d3.range(9).map(function(i) { return "q" + i + "-9"; }));
+
+				svg.append("g")
+					.classed("kommune PuBu", true)
+				  .selectAll("path")
+					.data(topojson.feature(norge, norge.objects.NO_Kommuner_pol_latlng).features)
+				  .enter().append("path")
+	      			.attr("class", function(d) { 
+	      				return quantize(byId.get(d.id).value); 
+	      			})
+					.attr("d", path);
+
+				svg.append("path")
+					.datum(topojson.mesh(norge, norge.objects.NO_Fylker_pol_latlng, function(a, b) { return a !== b; }))
+					.classed("fylke", true)
+					.attr("d", path);
+
+			});
 
 		});
 
