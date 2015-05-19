@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>SSB API</title>
+	<!--<link href="css/styles.css" rel="stylesheet">-->
+	<style>
+
+.map text {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 10px;
+  pointer-events: none;
+}
+
+.map path {
+  stroke-linejoin: round;
+  stroke-linecap: round;    
+}
+
+.map .overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+.map .outline {
+  fill: none;  
+  stroke: #777;
+  stroke-width: 2px;  
+}
+
+.map .graticule {
+  fill: none;
+  stroke: #777;
+  stroke-width: .2px;
+  stroke-opacity: .5;
+}
+
+/*
+.map .land-glow {
+  fill: #333;
+  fill-opacity: .2;
+  filter: url(#blur);
+}
+
+.map .land-fill {
+  fill: #fff;
+  stroke: #ddd;
+  stroke-width: .5px;
+}
+*/
+
+.map .land {
+  fill: #eee;
+  stroke: #ccc;
+  stroke-width: .5px;
+}
+
+
+
+
+
+
+
+
+	</style>
+
+</head>
+<body>
+
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="http://d3js.org/topojson.v1.min.js"></script>
+	<script src="../bower_components/jsonstat/json-stat.js"></script>
+
+	<script>
+
+		d3.json("data/NO_Admin_latlng.topojson", function(error, data) {
+			var kommuner = topojson.feature(data, data.objects.NO_Kommuner_pol_latlng);
+			var fylker = topojson.feature(data, data.objects.NO_Fylker_pol_latlng);
+
+			var width = 960,
+			    height = 500;
+
+			// https://github.com/mbostock/d3/wiki/Geo-Projections
+			var projection = d3.geo.azimuthalEqualArea()
+			    .scale(width * 5)
+			    .rotate([-10, -70])
+			    .center([-3, -9])
+			    .translate([width / 2, height / 2])
+			    .precision(.1);
+
+			var path = d3.geo.path()
+			    .projection(projection);
+
+			var svg = d3.select("body").append("svg")
+			    .attr("width", width)
+			    .attr("height", height)
+			    .classed("map", true);        
+
+			var g = svg.append("g")
+			    .classed("layers", true);
+
+			  // http://bl.ocks.org/mbostock/4136647
+			  g.append("path")
+			      .datum(kommuner)
+			      .classed("land", true)
+			      .attr("id", "land")
+			      .attr("d", path);
+
+		});
+
+	</script>
+
+</body>
+</html>

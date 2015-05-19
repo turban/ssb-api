@@ -1,0 +1,24 @@
+{
+  "name": "jsonstat",
+  "author": {
+    "name": "Xavier Badosa",
+    "url": "http://xavierbadosa.com"
+  },
+  "main": "json-stat.js",
+  "ignore": [
+    "**/.*"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "homepage": "https://github.com/badosa/JSON-stat",
+  "_release": "18487fa8b7",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "18487fa8b7e926e9ef6b5db44f8624475c910232"
+  },
+  "_source": "git://github.com/badosa/JSON-stat.git",
+  "_target": "*",
+  "_originalSource": "jsonstat",
+  "_direct": true
+}

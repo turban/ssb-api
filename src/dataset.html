@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>SSB API</title>
+	<!--<link href="css/styles.css" rel="stylesheet">-->
+</head>
+<body>
+
+	<script src="../bower_components/reqwest/src/reqwest.js"></script>
+	<script src="../bower_components/jsonstat/json-stat.js"></script>
+
+	<script>
+
+	JSONstat('http://data.ssb.no/api/v0/dataset/1108.json?lang=no', function(){
+		var ds = this.Dataset(0);
+
+		console.log('label', ds.label);
+		console.log('number of data', ds.n);
+		console.log('updated', ds.updated);
+		console.log('number of dimensions', ds.length);	
+		console.log('dimensions IDs', ds.id);	
+
+		var region = ds.Dimension(ds.role.geo[0]);
+		console.log(region.length, region.id, region.label, region.role);
+
+		var tid = ds.Dimension(ds.role.time[0]);
+		console.log(tid.length, tid.id, tid.label, tid.role);
+
+		var contentsCode = ds.Dimension('ContentsCode');
+		console.log(contentsCode.length, contentsCode.id, contentsCode.label, contentsCode.role);
+
+		var folketilvekst = contentsCode.Category(9);
+		console.log(folketilvekst.label, folketilvekst.unit, folketilvekst.coordinates);
+
+		var tbl = ds.toTable({ type: 'arrobj', content: 'id' }, function (d){
+			if (d.ContentsCode === 'Folketilvekst10') {
+				return d;
+				/*
+				return {
+					region: d.Region,
+					value: d.value
+				};
+				*/
+			}
+		});
+		console.log("#", tbl);
+
+	});
+
+	</script>
+
+</body>
+</html>

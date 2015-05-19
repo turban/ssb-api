@@ -6,6 +6,7 @@
   ],
   "private": false,
   "dependencies": {
-    "reqwest": "~1.1.5"
+    "reqwest": "~1.1.5",
+    "jsonstat": "*"
   }
 }
