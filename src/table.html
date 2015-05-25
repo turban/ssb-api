@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>SSB API</title>
+	<style>
+	</style>
+</head>
+<body>
+
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="../bower_components/jsonstat/json-stat.js"></script>
+
+	<script>
+     
+		JSONstat('http://data.ssb.no/api/v0/dataset/1108.json?lang=no', function(){
+			var ds = this.Dataset(0);
+
+			console.log(ds);
+
+			var tbl = ds.toTable({ type: 'arrobj', content: 'id' }, function (d){
+				if (d.ContentsCode === 'Folketilvekst10') {
+					return d;
+				}
+			});
+
+
+		});
+
+	</script>
+
+</body>
+</html>

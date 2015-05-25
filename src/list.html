@@ -8,24 +8,39 @@
 	<!--<link href="css/styles.css" rel="stylesheet">-->
 </head>
 <body>
-
-	<script src="../bower_components/reqwest/src/reqwest.js"></script>
-
+	<script src="http://d3js.org/d3.v3.min.js"></script>	
 	<script>
 
-	reqwest({
-		url: 'http://data.ssb.no/api/v0/dataset/list.json?lang=no', 
-		crossOrigin: true,
-		success: function (response) {
-			console.log("kommuner", filter(response.datasets, 'kommuner'));
-			console.log("fylker", filter(response.datasets, 'fylker'));
-		}
+	d3.json('http://data.ssb.no/api/v0/dataset/list.json?lang=no', function(error, response) { 
+		//console.log("kommuner", filter(response.datasets, 'kommuner'));
+		//console.log("fylker", filter(response.datasets, 'fylker'));
+		createTable(filter(response.datasets, 'kommuner'));
 	});
 
 	function filter (datasets, tag) {
 		return datasets.filter(function(dataset) {
 			return dataset.tags.indexOf(tag) !== -1;
 		});
+	}
+
+	function createTable (dataset) {
+		console.log("createTable", dataset);
+
+		var table = d3.select('body')
+			.append('table');
+
+		// https://vis4.net/blog/posts/making-html-tables-in-d3-doesnt-need-to-be-a-pain/
+		var tr = table.selectAll('tr')
+			.data(dataset).enter()
+			.append('tr')
+				.attr('id', function(d) { return d.id; })
+				.on('click', function(){ console.log(this.id); })
+				.append('td')
+					.text(function(d) { return d.title; });
+
+
+
+
 	}
 
 	</script>
