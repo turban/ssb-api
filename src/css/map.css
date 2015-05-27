@@ -2,15 +2,15 @@ body {
   margin: 0;
 }
 
+svg {
+  background: #fafafa;
+}
+
 .kommune { 
 	fill: none; 
 	stroke: #000; 
 	stroke-width: .2px; 
 	cursor: pointer; 
-}
-
-.kommune path:hover { 
-	stroke-width: 2px; 
 }
 
 .fylke { 
