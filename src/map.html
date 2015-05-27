@@ -4,79 +4,16 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>SSB API</title>
+	<title>Choropleth map</title>
 	<link href="css/colorbrewer.css" rel="stylesheet">
-	<style>
-		.kommune { fill: none; stroke: #000; stroke-width: .2px; }
-		.fylke { fill: none; stroke: #000; stroke-width: 2px; stroke-linejoin: round; }
-	</style>
-
+	<link href="css/tooltip.css" rel="stylesheet">
+	<link href="css/map.css" rel="stylesheet">
 </head>
 <body>
-
-	<script src="http://d3js.org/d3.v3.min.js"></script>
-	<script src="http://d3js.org/topojson.v1.min.js"></script>
+	<script src="../bower_components/d3/d3.min.js"></script>
+	<script src="../bower_components/d3-tip/index.js"></script>
+	<script src="../bower_components/topojson/topojson.js"></script>
 	<script src="../bower_components/jsonstat/json-stat.js"></script>
-
-	<script>
-
-		d3.json("data/NO_Admin_latlng.topojson", function(error, norge) {
-
-			var width = 960,
-			    height = 500;
-
-			var projection = d3.geo.azimuthalEqualArea()
-			    .scale(width * 10)
-			    .rotate([-10, -70])
-			    .center([-1, -9])
-			    .translate([width / 2, height / 2])
-			    .precision(.1);
-
-			var path = d3.geo.path()
-			    .projection(projection);
-
-			var svg = d3.select("body").append("svg")
-			    .attr("width", width)
-			    .attr("height", height)
-			    .classed("map", true);        
-
-			JSONstat('http://data.ssb.no/api/v0/dataset/1108.json?lang=no', function(){
-				var ds = this.Dataset(0);
-
-				var tbl = ds.toTable({ type: 'arrobj', content: 'id' }, function (d){
-					if (d.ContentsCode === 'Folketilvekst10') {
-						return d;
-					}
-				});
-
-				var min = d3.min(tbl, function(d) { return d.value }),
-					max = d3.max(tbl, function(d) { return d.value }),
-					byId = d3.map(tbl, function(d) { return d.Region; });
-
-				var quantize = d3.scale.quantile()
-					.domain(tbl.map(function(d){return d.value}).sort())
-					.range(d3.range(9).map(function(i) { return "q" + i + "-9"; }));
-
-				svg.append("g")
-					.classed("kommune PuBu", true)
-				  .selectAll("path")
-					.data(topojson.feature(norge, norge.objects.NO_Kommuner_pol_latlng).features)
-				  .enter().append("path")
-	      			.attr("class", function(d) { 
-	      				return quantize(byId.get(d.id).value); 
-	      			})
-					.attr("d", path);
-
-				svg.append("path")
-					.datum(topojson.mesh(norge, norge.objects.NO_Fylker_pol_latlng, function(a, b) { return a !== b; }))
-					.classed("fylke", true)
-					.attr("d", path);
-
-			});
-
-		});
-
-	</script>
-
+	<script src="js/map.js"></script>
 </body>
 </html>

@@ -7,6 +7,9 @@
   "private": false,
   "dependencies": {
     "reqwest": "~1.1.5",
-    "jsonstat": "*"
+    "jsonstat": "*",
+    "d3": "~3.5.5",
+    "d3-tip": "~0.6.7",
+    "topojson": "~1.6.19"
   }
 }
